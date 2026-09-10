@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1'>
+<link rel='canonical' href='https://amos-mig.github.io/markdown-to-html-api-demo/'>
+<meta property='og:url' content='https://amos-mig.github.io/markdown-to-html-api-demo/'>
+<title>Markdown-to-HTML API — live demo</title>
+<style>
+:root{--bg:#0b0d12;--pan:#14171f;--bd:#262b36;--tx:#e8eaf0;--mu:#9aa3b2;--ac:#10b981}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 system-ui,Segoe UI,Roboto,sans-serif}
+code,pre,textarea{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.banner{background:var(--ac);color:#04140d;text-align:center;padding:8px 14px;font-size:13px;font-weight:600}
+header,main,footer{max-width:1020px;margin:0 auto;padding:0 20px}
+header{margin-top:30px}
+h1{font-size:30px;margin:0 0 6px;letter-spacing:-.02em}
+.a{color:var(--ac)}
+.sub{color:var(--mu);margin:0;max-width:780px}
+main{margin:26px auto;display:grid;gap:26px}
+.panel{background:var(--pan);border:1px solid var(--bd);border-radius:10px;padding:16px}
+.panel h3{margin:0 0 12px;font-size:15px}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.tabs button{background:#0e1118;border:1px solid var(--bd);color:var(--tx);padding:7px 12px;border-radius:7px;cursor:pointer;font:inherit;font-size:13px}
+.tabs button.on{border-color:var(--ac);color:var(--ac);background:rgba(16,185,129,.08)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.cols{grid-template-columns:1fr}}
+pre{background:#0e1118;border:1px solid var(--bd);border-radius:7px;padding:10px 12px;overflow:auto;font-size:12.5px;line-height:1.5;margin:0 0 10px;white-space:pre-wrap;word-break:break-word}
+.lab{color:var(--mu);font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin:0 0 4px}
+textarea{width:100%;min-height:80px;background:#0e1118;border:1px dashed var(--bd);border-radius:7px;color:var(--tx);padding:10px;font-size:12.5px;resize:vertical}
+button.ghost{background:none;border:1px solid var(--bd);color:var(--mu);padding:6px 12px;border-radius:7px;cursor:pointer;font:inherit;font-size:12.5px;margin-top:2px}
+button.ghost:hover{border-color:var(--ac);color:var(--ac)}
+.lock{display:none;color:var(--ac);font-size:12.5px;border:1px dashed var(--ac);background:rgba(16,185,129,.06);border-radius:7px;padding:8px 10px;margin-top:10px}
+.sim{color:var(--mu);font-size:11px;font-weight:400}
+.st{color:var(--ac);min-height:38px}
+.prev{display:none;border:1px solid var(--bd);border-radius:7px;padding:12px 16px;background:#fff;color:#14171f;font-size:13.5px;margin:0 0 10px;overflow:auto}
+.prev h1,.prev h2,.prev h3{margin:.35em 0;line-height:1.25}
+.prev p{margin:.4em 0}
+.prev table{border-collapse:collapse;margin:.4em 0}
+.prev td,.prev th{border:1px solid #c9ccd4;padding:3px 9px}
+.prev code{background:#eef0f3;border-radius:4px;padding:1px 5px}
+.prev blockquote{border-left:3px solid var(--ac);margin:.4em 0;padding:2px 0 2px 12px;color:#3a3f4a}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.card{background:var(--pan);border:1px solid var(--bd);border-radius:10px;padding:14px 16px}
+.card h4{margin:0 0 6px;font-size:14px}
+.card p{margin:0;color:var(--mu);font-size:13px}
+.card.locked{border-style:dashed}
+.card em{color:var(--ac);font-style:normal}
+code{background:#0e1118;border:1px solid var(--bd);border-radius:4px;padding:1px 5px;font-size:.88em}
+pre code{border:0;padding:0;background:none}
+.cta{display:inline-block;background:var(--ac);color:#04140d;font-weight:700;padding:12px 22px;border-radius:8px;text-decoration:none;font-size:15px}
+.meta{color:var(--mu);font-size:12.5px;margin:10px 0 14px}
+footer{margin:34px auto 44px;border-top:1px solid var(--bd);padding-top:16px;color:var(--mu);font-size:13px;display:flex;gap:16px;flex-wrap:wrap}
+footer a{color:var(--ac);text-decoration:none}
+</style>
+</head>
+<body>
+<div class='banner'>Live demo — 3 preset samples with canned responses; arbitrary input is locked. The full product converts any Markdown live ↓</div>
+<header>
+<h1>Markdown-to-HTML API</h1>
+<p class='sub'>One Python file that turns Markdown into clean, <span class='a'>sanitized HTML</span> on demand — feed it docs, CMS content, or user input and get safe markup for emails, sites, and apps.</p>
+</header>
+<main>
+<section class='panel'>
+<h3>Try the endpoint <span class='sim'>(simulated client — the real service answers live over HTTP)</span></h3>
+<div class='tabs' id='tabs'>
+<button data-k='readme'>📄 README + table</button>
+<button data-k='xss'>☠️ Hostile comment (XSS)</button>
+<button data-k='news'>📬 Newsletter block</button>
+</div>
+<div class='cols'>
+<div>
+<div class='lab'>Request · POST /md</div>
+<pre id='curl'></pre>
+<div class='lab'>Request body · sample.md</div>
+<pre id='mdin'></pre>
+<div class='lab'>Your own Markdown?</div>
+<textarea id='own' placeholder='Paste any Markdown here…'></textarea>
+<button class='ghost' id='tryBtn'>Convert it →</button>
+<div class='lock' id='lock'></div>
+</div>
+<div>
+<div class='lab'>Response</div>
+<pre id='status' class='st'>—</pre>
+<pre id='hdrs' style='min-height:70px'></pre>
+<pre id='src'></pre>
+<div id='prev' class='prev'></div>
+<button class='ghost' id='view' hidden></button>
+</div>
+</div>
+</section>
+<section>
+<h3 style='margin:0 0 12px;font-size:15px'>What ships in the kit</h3>
+<div class='grid'>
+<div class='card'><h4>✅ Full Markdown coverage</h4><p>Headings, tables, fenced code, ordered/unordered lists, blockquotes, inline styles — parsed in one pass.</p></div>
+<div class='card'><h4>✅ Sanitized against XSS</h4><p>Script tags, event handlers and <code>javascript:</code> URLs stripped on every request. Try the hostile sample above.</p></div>
+<div class='card'><h4>✅ Styleable <code>md-*</code> classes</h4><p>Predictable classes on every element, so your site or email CSS just drops in.</p></div>
+<div class='card locked'><h4>🔒 Custom sanitizer profiles</h4><p>Per-route allow-lists, raw-HTML passthrough, signed API tokens. <em>In the full API.</em></p></div>
+<div class='card locked'><h4>🔒 Batch + webhook mode</h4><p>Convert whole doc trees and push results straight into your pipeline. <em>In the full kit.</em></p></div>
+</div>
+</section>
+<section class='panel'>
+<h3>What you deploy</h3>
+<pre><code># mdapi.py — the whole service is one file
+from flask import Flask, request, jsonify
+import renderer          # bundled, stdlib-only modules
+
+app = Flask(__name__)
+
+@app.post('/md')
+def md():
+    html = renderer.render(request.get_data(), sanitize=True)
+    return jsonify(html=html)
+
+# … full file ships with tests, Dockerfile & docs</code></pre>
+<p class='meta'>Single Python file · Flask + stdlib · Python 3.8+ · no heavy markdown stack</p>
+<a class='cta' href='https://amosmign.gumroad.com/l/markdown-to-html-api'>Get the full API · 29</a>
+</section>
+</main>
+<footer>
+<span>Markdown-to-HTML API</span>
+<a href='https://kits.amosmignery.dev'>kits.amosmignery.dev</a>
+<a href='https://github.com/Amos-Mig/markdown-to-html-api-demo'>GitHub</a>
+</footer>
+<script>
+const S={
+readme:{lat:14,md:`# Changelog v2.4\n\n- **faster** cold starts\n- fixed \`null\` deref in parser\n\n| Stage | p50 |\n|---|---|\n| parse | 3ms |\n| render | 5ms |`,h:[`Content-Type: application/json`,`X-Sanitizer: on · stripped=0`,`X-Render-Time: 3ms`,`Server: mdapi/1.0`],html:`<h1 class='md-h1'>Changelog v2.4</h1>\n<ul class='md-list'>\n  <li><strong>faster</strong> cold starts</li>\n  <li>fixed <code class='md-code'>null</code> deref in parser</li>\n</ul>\n<table class='md-table'>\n  <thead><tr><th>Stage</th><th>p50</th></tr></thead>\n  <tbody>\n    <tr><td>parse</td><td>3ms</td></tr>\n    <tr><td>render</td><td>5ms</td></tr>\n  </tbody>\n</table>`},
+xss:{lat:9,md:`Nice post!\n\n<script>alert('xss')<\/script>\n\nCheck [docs](javascript:alert(1)) and <img src=x onerror=steal()>`,h:[`Content-Type: application/json`,`X-Sanitizer: on · stripped=3 → script · href scheme · img@onerror`,`Server: mdapi/1.0`],html:`<p class='md-p'>Nice post!</p>\n<p class='md-p'>Check <a class='md-link' rel='noopener nofollow'>docs</a> and</p>`},
+news:{lat:11,md:`## Ship day 🚀\n\n> This shipped in one afternoon. — a happy dev\n\n1. Connect your CMS\n2. \`POST /md\`\n3. Get safe HTML`,h:[`Content-Type: application/json`,`X-Sanitizer: on · stripped=0`,`X-Render-Time: 2ms`,`Server: mdapi/1.0`],html:`<h2 class='md-h2'>Ship day 🚀</h2>\n<blockquote class='md-quote'>\n  <p class='md-p'>“This shipped in one afternoon.” — a happy dev</p>\n</blockquote>\n<ol class='md-list'>\n  <li>Connect your CMS</li>\n  <li><code class='md-code'>POST /md</code></li>\n  <li>Get safe HTML</li>\n</ol>`}
+};
+const $=id=>document.getElementById(id);
+let cur='readme',mode='src';
+const T=$('tabs').querySelectorAll('button');
+T.forEach(b=>b.onclick=()=>go(b.dataset.k));
+function go(k){
+cur=k;T.forEach(b=>b.classList.toggle('on',b.dataset.k===k));
+const s=S[k];
+$('curl').textContent=`curl -s -X POST http://localhost:8080/md -H 'Content-Type: text/markdown' --data-binary @sample.md`;
+$('mdin').textContent=s.md;
+$('status').textContent='POST /md … sending';
+$('hdrs').textContent='';$('src').textContent='';$('prev').innerHTML='';$('view').hidden=true;
+setTimeout(()=>{
+if(S[cur]!==s)return;
+$('status').textContent=`HTTP/1.1 200 OK · ${s.lat} ms · ${s.html.length} B · application/json`;
+$('hdrs').textContent=s.h.join('\n');
+$('src').textContent=s.html;
+$('prev').innerHTML=s.html;
+$('view').hidden=false;
+if(mode==='prev'){mode='src';$('src').style.display='';$('prev').style.display='none';$('view').textContent='▶ Rendered preview';}
+},150+s.lat*28);
+}
+$('view').onclick=()=>{
+mode=mode==='src'?'prev':'src';
+$('src').style.display=mode==='src'?'':'none';
+$('prev').style.display=mode==='src'?'none':'block';
+$('view').textContent=mode==='src'?'▶ Rendered preview':'◀ HTML source';
+};
+$('tryBtn').onclick=()=>{
+const l=$('lock');l.style.display='block';
+l.textContent='🔒 The full API converts any Markdown live, server-side. This demo ships 3 preset samples with canned responses only — arbitrary input stays locked in the demo.';
+};
+go('readme');
+</script>
+</body>
+</html>
